@@ -15,19 +15,25 @@ Sam Samson and Sons is a real estate developer looking to adopt a data driven ap
  	1. **Obtain:** Data was provided by client
  	2. **Scrub:** Clean data
      * For each column:
-       * find and deal with missing values
-       * fix datatypes
-       * convert only necessary items to categorical (questioinable cols will be tested later)
-       * normalize definitivly continuous variables
-     * Infer values (like finished basement sqft?)
+       * x find and deal with missing values
+       * x fix datatypes
+         * Track continuous and categorical variables
+       * x convert only necessary items to categorical (questioinable cols will be tested later)
+         * Don't convert anything to categorical until after the baseline model is created.
 	3. **Explore**
-    * Look for correlations and multicoliniarity
-    * Explore distributions
-    * Normlaize data
+    * Answer questions from first section:
+      * x Does floors include basement?
+    * x Infer values (like finished basement sqft?)
+    * x Look for correlations and multicoliniarity
+      * Track removed variables
+    * Create baseline model (here because iterations will happen in the model phase)
+    * Explore distributions (don't modify them yet)
+    * Normlaize data (here because exploration is easier with real numbers)
 	4. **Model**
     * Create baseline model (how many features??)
     * Remove insignifgant features
     * Test questionable features as categorical or continuous
+      * Should grade be reduced to 3 categories
     * Look for possible interactions (zipcode and bathroom?)
 	5. **iNterpret**
     * Build visuals to describe findings
