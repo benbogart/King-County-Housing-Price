@@ -2,12 +2,10 @@
 
 Sam Samson and Sons is a real estate developer looking to adopt a data driven approach to choosing which properties to acquire, remodel, and bring back to market. In particular they want a model to answer the following questions:
 
-1. Which upgrades will yield the highest return?
-   - Examples:
-     - what is the value of adding a bathroom?
-     - what is the value of moving up one or more categories in the quality ranking?
-   - Are certain upgrades more valuable in certain areas? If so which factors determine best value remodeling projects?
-2. Determine the profit potential of a remodel on a listing.  i.e. how much more can a remodel sell for after taking certain steps like adding a bathroom.
+1. What is the value of adding an enclosed porch, or other above ground enclosed space that is not air-conditioned (part of living space).
+   1. Is it more valuable in some areas than others?
+
+They are interested in houses that they can sell easily so nothing over $1m
 
 # Workflow: CRISP-DM
 
