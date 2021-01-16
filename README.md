@@ -1,6 +1,6 @@
 
 
-![facebook_cover_photo_2](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/facebook_cover_photo_2.png)
+![facebook_cover_photo_2](images/facebook_cover_photo_2.png)
 
 # Business Case
 
@@ -71,7 +71,7 @@ Created functions that will be reused throughout the notebook.
 
 ## Suspected Continuous Variables
 
-![linearity1](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/linearity1.png)
+![linearity1](images/linearity1.png)
 
 Most variables appear to have at least some linear relationship with price. The exceptions are `sqft_lot` and `sqft_lot15`.  Those appear to extend in two directions.  Since our model already performs reasonably well we will drop them.
 
@@ -79,7 +79,7 @@ Most variables appear to have at least some linear relationship with price. The 
 
 ## Suspected Categorical Variables
 
-![linearity2](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/linearity2.png)
+![linearity2](images/linearity2.png)
 
 All of the potential categorical values except `zipcode` and `floors` appear to have a linear relationship with price.  Because of that we can treat them as continuous for now.
 
@@ -89,9 +89,9 @@ zipcodes are probably not being used correctly here which we will need to addres
 
 `sqft_living` seems to have some prominent outliers.  We will use the DBSCAN clustering model to identify the outliers with respect to `sqft_living` and `price`.  The values need to be standardized so they are on the same scale, then run through DBSCAN.  DBSCAN groups values together by proximity.  Values that do not meet the grouping and distance criteria are marked as outliers with a -1.  I choose eps by experimentation.
 
-![outliers1](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/outliers1.png)
+![outliers1](images/outliers1.png)
 
-![outliers2](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/outliers2.png)
+![outliers2](images/outliers2.png)
 
 ## Create model 2
 
@@ -103,21 +103,21 @@ Because bedrooms is probably highly correlated with soft_living, we want to crea
 
 ### Check interactions of `bedroom` with `sqft_living`
 
-![new_features1](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/new_features1.png)
+![new_features1](images/new_features1.png)
 
 After creating the variable and log transforming it it does have a linear relationship with price.
 
-![new_features2](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/new_features2.png)
+![new_features2](images/new_features2.png)
 
 ## Then Repeat a similar process for Bathrooms
 
 ### Check interactions of `bedroom` with `sqft_living`
 
-![new_features3](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/new_features3.png)
+![new_features3](images/new_features3.png)
 
 ### Check for linearity
 
-![new_features4](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/new_features4.png)
+![new_features4](images/new_features4.png)
 
 Not as linear as bedrooms but should work fine.
 
@@ -125,26 +125,26 @@ Not as linear as bedrooms but should work fine.
 
 We want to find a way to use the zipcode information in an easy to explain way for the stakeholder.  We could create dummies for every zipcode but that would be cumbersome.  Here we will try to determine the optimum number of zipcode bins by grouping by median price in each zipcode.
 
-![binsizes](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/binsizes.png)
+![binsizes](images/binsizes.png)
 
 I chose to go with easier to explain and created 3 bins and mapped the resuts.
 
-![zipcode_zones_map](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/zipcode_zones_map.png)
+![zipcode_zones_map](images/zipcode_zones_map.png)
 
 # Correlations
 
 Before dealing with correlations
 
-![corr1](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/corr1.png)
+![corr1](images/corr1.png)
 
 * Dropped high correlations `grade`,`sqft_above`, `sqft_living15`
 * checked for interactions between `zipcode_cat` and `sqft_living`
 
-![corr2](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/corr2.png)
+![corr2](images/corr2.png)
 
 Incorporated this interaction into our model and dropped `sqft_living` The new correlation matrix looks like:
 
-![corr3](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/corr3.png)
+![corr3](images/corr3.png)
 
 All values are between -0.75 and 0.75
 
@@ -152,13 +152,13 @@ All values are between -0.75 and 0.75
 
 Multicoliniarity was high.
 
-![multicolinearity1](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/multicolinearity1.png)
+![multicolinearity1](images/multicolinearity1.png)
 
 After removing the biggest offenders we found that by removing either `beds_per_sqft` **or** `baths_per_sqft` all vif scores were under 5.  Because of this we decided to use multiple models to answer the questions at hand.
 
-![multicolinearity2](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/multicolinearity2.png)
+![multicolinearity2](images/multicolinearity2.png)
 
-![multicolinearity3](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/multicolinearity3.png)
+![multicolinearity3](images/multicolinearity3.png)
 
 
 
@@ -166,11 +166,11 @@ After removing the biggest offenders we found that by removing either `beds_per_
 
 First we visualized the assumptions of normality and homeskedastisity of the residuals
 
-![Assumptions 1](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/assumptions1.png)
+![Assumptions 1](images/assumptions1.png)
 
 After log transforming both the dependent variable `price` and the all of the sqft independnt variables things started looking much better and were deemed acceptable for this assessment.
 
-![assumptions 2](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/assumptions2.png)
+![assumptions 2](images/assumptions2.png)
 
 # Interpretation
 
@@ -194,7 +194,7 @@ Since this model can be used for prediction, create a function to easily take th
 
 * Visualise Actual vs Predicted prices
 
-![Predicted vs Actual](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/report1.png)
+![Predicted vs Actual](images/report1.png)
 
 ## Interpretation of coefficients
 
@@ -227,7 +227,7 @@ $$ \left( \frac{\textbf{Beds/sqft}_2}{\textbf{Beds/sqft}_1} \right) ^ {-0.1374} 
 
 * Visualize
 
-![Value of adding one bedroom](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/report2.png)
+![Value of adding one bedroom](images/report2.png)
 
 
 
@@ -255,7 +255,7 @@ $$ \left( \frac{\textbf{Baths/sqft}_2}{\textbf{Baths/sqft}_1} \right) ^ {0.0470}
 
 * visualize
 
-![Effect of adding a Bathroom](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/report3.png)
+![Effect of adding a Bathroom](images/report3.png)
 
 # Final Model List
 
