@@ -1,66 +1,295 @@
-# Phase 2 Project
 
-Another module down--you're almost half way there!
 
-![awesome](https://raw.githubusercontent.com/learn-co-curriculum/dsc-phase-2-project-campus/master/halfway-there.gif)
+![facebook_cover_photo_2](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/facebook_cover_photo_2.png)
 
-All that remains in Phase 2 is to put our newfound data science skills to use with a large project! This project should take 20 to 30 hours to complete.
+# Business Case
 
-## Project Overview
+Sam Samson and Sons is a real estate developer looking to adopt a data driven approach to choosing which properties to acquire, remodel, and bring back to market. In particular they want a model to answer the following questions:
 
-For this project, you will use regression modeling to analyze house sales in a northwestern county.
+1. Which upgrades will yield the highest return?
+   - Examples:
+     - what is the value of adding living space to the home?
+     - what is the value of adding a bedroom or a bathroom?
 
-### The Data
+# Obtain [data]
+The data for this analysis was given to us by the client.  The dataset contains approximately one year of sales data from 05/02/2014, 05/27/2015.
 
-This project uses the King County House Sales dataset, which can be found in  `kc_house_data.csv` in the data folder in this repo. The description of the column names can be found in `column_names.md` in the same folder. As with most real world data sets, the column names are not perfectly described, so you'll have to do some research or use your best judgment if you have questions about what the data means.
+## Column Names and descriptions for Kings County Data Set
 
-It is up to you to decide what data from this dataset to use and how to use it. If you are feeling overwhelmed or behind, we recommend you ignore some or all of the following features:
+**Updated from [https://www.kaggle.com/harlfoxem/housesalesprediction/discussion/207885]**
+* **id** - unique identified for a house
+* **dateDate** - house was sold
+* **pricePrice** -  is prediction target
+* **bedroomsNumber** -  of Bedrooms/House
+* **bathroomsNumber** -  of bathrooms/bedrooms
+* **sqft_livingsquare** -  footage of the home
+* **sqft_lotsquare** -  footage of the lot
+* **floorsTotal** -  floors (levels) in house
+* **waterfront** - House which has a view to a waterfront
+* **view** - An index from 0 to 4 of how good the view of the property was
+* **condition** - How good the condition is ( Overall )
+* **grade** - An index from 1 to 13, where 1-3 falls short of building construction and design, 7 has an average level of construction and design, and 11-13 have a high quality level of construction and design.
+* **sqft_above** - square footage of house apart from basement
+* **sqft_basement** - square footage of the basement
+* **yr_built** - Built Year
+* **yr_renovated** - Year when house was renovated
+* **zipcode** - zip
+* **lat** - Latitude coordinate
+* **long** - Longitude coordinate
+* **sqft_living15** - The square footage of interior housing living space for the nearest 15 neighbors
+* **sqft_lot15** - The square footage of the land lots of the nearest 15 neighbors
 
-* date
-* view
-* sqft_above
-* sqft_basement
-* yr_renovated
-* zipcode
-* lat
-* long
-* sqft_living15
-* sqft_lot15
+# Scrub (Data Preparation)
 
-### Business Problem
+This section contains all of the basic data cleaning for the data set including:
+* Missing values
+  * Fill waterfront with median (0)
+  * Fill view with median (0)
+  * Fill yr_renovated with median (0)
+* Data types
+  * Drop date (deemed not necessary for this project)
+  * sqft_basement was reconstructed from sqft_above and sqft_living
 
-It is up to you to define a stakeholder and business problem appropriate to this dataset.
+# Baseline model
 
-If you are struggling to define a stakeholder, we recommend you complete a project for a real estate agency that helps homeowners buy and/or sell homes. A business problem you could focus on for this stakeholder is the need to provide advice to homeowners about how home renovations might increase the estimated value of their homes, and by what amount.
+Baseline model created with an $R^2$ of 0.70 and all p values are below 0.05.
 
-## Deliverables
+# Tools
 
-There are three deliverables for this project:
+Created functions that will be reused throughout the notebook.
 
-* A **GitHub repository**
-* A **Jupyter Notebook**
-* A **non-technical presentation**
+* **rmse_delogged()** - calculates an rmse on the original scale when the dependent variable has been log transformed
+* **cross_validate_rmse()** - perform k-fold cross validation
+* **quicktest()** - creates a model, and optionally saves, displays a summary and calculates rmse.
+* **model_report()** - prints a DataFrame with the statistics of saved models.
 
-Review the "Project Submission & Review" page in the "Milestones Instructions" topic for instructions on creating and submitting your deliverables. Refer to the rubric associated with this assignment for specifications describing high-quality deliverables.
+# Explore (Data Understanding)
 
-### Key Points
+## Review data statistics
 
-* **Your deliverables should explicitly address each step of the data science process.** Refer to [the Data Science Process lesson](https://github.com/learn-co-curriculum/dsc-data-science-processes) from Topic 19 for more information about process models you can use.
+## Check for linearity of variables.
 
-* **Your Jupyter Notebook should demonstrate an iterative approach to modeling.** This means that you begin with a basic model, evaluate it, and then provide justification for and proceed to a new model. After you finish refining your models, you should provide 1-3 paragraphs discussing your final model - this should include interpreting at least 3 important parameter estimates or statistics.
+## Suspected Continuous Variables
 
-* **Based on the results of your models, your notebook and presentation should discuss at least two features that have strong relationships with housing prices.**
+![linearity1](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/linearity1.png)
 
-## Getting Started
+Most variables appear to have at least some linear relationship with price. The exceptions are `sqft_lot` and `sqft_lot15`.  Those appear to extend in two directions.  Since our model already performs reasonably well we will drop them.
 
-Start on this project by forking and cloning [this project repository](https://github.com/learn-co-curriculum/dsc-phase-2-project) to get a local copy of the dataset.
+`yr_renovated` looks like it has a large gap between 0 and the first non-zero value but then is linear.  This should be fine because any coefficient * 0 will be 0.
 
-We recommend structuring your project repository similar to the structure in [the Phase 1 Project Template](https://github.com/learn-co-curriculum/dsc-project-template). You can do this either by creating a new fork of that repository to work in or by building a new repository from scratch that mimics that structure.
+## Suspected Categorical Variables
 
-## Project Submission and Review
+![linearity2](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/linearity2.png)
 
-Review the "Project Submission & Review" page in the "Milestones Instructions" topic to learn how to submit your project and how it will be reviewed. Your project must pass review for you to progress to the next Phase.
+All of the potential categorical values except `zipcode` and `floors` appear to have a linear relationship with price.  Because of that we can treat them as continuous for now.
 
-## Summary
+zipcodes are probably not being used correctly here which we will need to address soon.
 
-This project will give you a valuable opportunity to develop your data science skills using real-world data. The end-of-phase projects are a critical part of the program because they give you a chance to bring together all the skills you've learned, apply them to realistic projects for a business stakeholder, practice communication skills, and get feedback to help you improve. You've got this!
+## Check for Outliers (DBSCAN)
+
+`sqft_living` seems to have some prominent outliers.  We will use the DBSCAN clustering model to identify the outliers with respect to `sqft_living` and `price`.  The values need to be standardized so they are on the same scale, then run through DBSCAN.  DBSCAN groups values together by proximity.  Values that do not meet the grouping and distance criteria are marked as outliers with a -1.  I choose eps by experimentation.
+
+![outliers1](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/outliers1.png)
+
+![outliers2](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/outliers2.png)
+
+## Create model 2
+
+# Create new features
+
+## Bedrooms
+
+Because bedrooms is probably highly correlated with soft_living, we want to create a new metric which might have more indepedence in our model.  We are goign to create `beds_per_sqft`
+
+### Check interactions of `bedroom` with `sqft_living`
+
+![new_features1](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/new_features1.png)
+
+After creating the variable and log transforming it it does have a linear relationship with price.
+
+![new_features2](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/new_features2.png)
+
+## Then Repeat a similar process for Bathrooms
+
+### Check interactions of `bedroom` with `sqft_living`
+
+![new_features3](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/new_features3.png)
+
+### Check for linearity
+
+![new_features4](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/new_features4.png)
+
+Not as linear as bedrooms but should work fine.
+
+## Create zipcode bins
+
+We want to find a way to use the zipcode information in an easy to explain way for the stakeholder.  We could create dummies for every zipcode but that would be cumbersome.  Here we will try to determine the optimum number of zipcode bins by grouping by median price in each zipcode.
+
+![binsizes](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/binsizes.png)
+
+I chose to go with easier to explain and created 3 bins and mapped the resuts.
+
+![zipcode_zones_map](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/zipcode_zones_map.png)
+
+# Correlations
+
+Before dealing with correlations
+
+![corr1](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/corr1.png)
+
+* Dropped high correlations `grade`,`sqft_above`, `sqft_living15`
+* checked for interactions between `zipcode_cat` and `sqft_living`
+
+![corr2](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/corr2.png)
+
+Incorporated this interaction into our model and dropped `sqft_living` The new correlation matrix looks like:
+
+![corr3](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/corr3.png)
+
+All values are between -0.75 and 0.75
+
+# Multicolinearity
+
+Multicoliniarity was high.
+
+![multicolinearity1](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/multicolinearity1.png)
+
+After removing the biggest offenders we found that by removing either `beds_per_sqft` **or** `baths_per_sqft` all vif scores were under 5.  Because of this we decided to use multiple models to answer the questions at hand.
+
+![multicolinearity2](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/multicolinearity2.png)
+
+![multicolinearity3](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/multicolinearity3.png)
+
+
+
+# Model Assumptions
+
+First we visualized the assumptions of normality and homeskedastisity of the residuals
+
+![Assumptions 1](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/assumptions1.png)
+
+After log transforming both the dependent variable `price` and the all of the sqft independnt variables things started looking much better and were deemed acceptable for this assessment.
+
+![assumptions 2](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/assumptions2.png)
+
+# Interpretation
+
+In the end we have 3 final models.  One to predict home prices and determine the value of adding squarefootage to a house.  Then two other models for predicting the value of adding a bedroom or bathroom to the existing square footage.  These final two models were necessary because of high vifs between them in the first model.  These vifs, however do not effect the sqfootage estimates for which the vif remains low.
+
+## Model 1
+
+* uses both `baths_per_sqft` and  `beds_per_sqft`
+
+* stats:
+
+  ```
+  'r2': 0.775,
+   'train_rmse': 166788.0,
+   'test_rmse': 167158.0
+  ```
+
+### Prediction function
+
+Since this model can be used for prediction, create a function to easily take the entered values and transform them to the values the model needs.  The formula does much of this, but not all.  In the future it would be good to write transformation functions for patsy to use when transforming the input variables so they could easily be applied here too.
+
+* Visualise Actual vs Predicted prices
+
+![Predicted vs Actual](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/report1.png)
+
+## Interpretation of coefficients
+
+This model can also be used to determine the value of adding square footage to the home.  The coefficient for `sqft_living` has an interaction with zipcode zone.  Because both the dependent and independent variables are log transformed the price after adding square footage to the home can be determined by the following formula:
+
+$$ \textbf{Starting Value} \cdot \left( \frac{\textbf{sqft after}}{\textbf{sqft before}} \right)^{coef}
+= \textbf {New Price}$$
+
+## Model 2
+
+* uses only `beds_pre_sqft`
+
+* stats:
+
+  ```
+  'r2': 0.777,
+   'train_rmse': 165853.0,
+   'test_rmse': 166231.0
+  ```
+
+This model can be used to predict the value of changing the number of bedrooms in the existing footprint of the house.  If more square footage were added additional calculations would be necessary.
+
+The coefficient of the variable `np.log(beds_per_sqft)` is $-0.1374$.
+
+Because both the dependent and independent variable are log transformed we take the proportion of $Beds_2$ to $Beds_1$ to the power of the coefficient.
+
+$$ \left( \frac{\textbf{Beds/sqft}_2}{\textbf{Beds/sqft}_1} \right) ^ {-0.1374} = 
+ \left( \frac{\textbf{Beds}_2}{\textbf{Beds}_1} \right) ^ {-0.1374}
+ = \textbf{Effect on housing price}$$
+
+* Visualize
+
+![Value of adding one bedroom](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/report2.png)
+
+
+
+## Model 3
+
+* uses only `baths_pre_sqft`
+
+* stats:
+
+  ```
+  'r2': 0.774,
+   'train_rmse': 167060.0,
+   'test_rmse': 167431.0
+  ```
+
+Similar to the model above, this model can be used to understand the value of changing the number of bathrooms in the existing footprint of the house.  If more square footage were added additional calculations would be necessary.
+
+The coefficient of the variable `np.log(baths_per_sqft)` is $0.0470$.
+
+Because both the dependent and independent variable are log transformed we take the proportion of $Baths_2$ to $Baths_1$ to the power of the coefficient.
+
+$$ \left( \frac{\textbf{Baths/sqft}_2}{\textbf{Baths/sqft}_1} \right) ^ {0.0470} = 
+ \left( \frac{\textbf{Baths}_2}{\textbf{Baths}_1} \right) ^ {0.0470}
+ = \textbf{Effect on housing price}$$
+
+* visualize
+
+![Effect of adding a Bathroom](/Users/benbogart/Documents/Flatiron/phase-2/King-County-Housing-Price/images/report3.png)
+
+# Final Model List
+
+|                                                      |    r2 | train_rmse | test_rmse | diff_rmse |
+| ---------------------------------------------------: | ----: | ---------: | --------: | --------: |
+|                                             baseline | 0.700 |   201245.0 |  202880.0 |    1635.0 |
+|            1 (nonlinear feature and outlier removal) | 0.702 |   178838.0 |  180363.0 |    1525.0 |
+|                           2 (bed/sqft and bath/sqft) | 0.712 |   174544.0 |  175974.0 |    1431.0 |
+|                                     3 (zipcode cats) | 0.771 |   155469.0 |  156164.0 |     696.0 |
+|                             4 (zip sqft interaction) | 0.779 |   152742.0 |  153048.0 |     306.0 |
+|                                 5.1 (baths_per_sqft) | 0.746 |   163766.0 |  164182.0 |     416.0 |
+|                                  5.2 (beds_per_sqft) | 0.746 |   163967.0 |  164370.0 |     403.0 |
+| Final Model 1: Price prediction and value estimation | 0.775 |   166788.0 |  167158.0 |     370.0 |
+|                              Final 2: Bedroom Effect | 0.777 |   165853.0 |  166231.0 |     378.0 |
+|                      Final model 3: Bathrooms Effect | 0.774 |   167060.0 |  167431.0 |     370.0 |
+
+# Notes
+
+There is plenty more to explore in this data, for example the effect of improving the condition of a house.  The models here focus on isolating factors for accurate coefficients rather than on precise prediction.  For price prediction we would not need to be worried about the accuracy of the coefficients so correlations wouldn't need to be removed.  That would allow us to use more data for a more accurate prediction.
+
+# For More Information
+
+Please review our full analysis in our [Jupyter Notebook](notebook.ipynb) or our [Presentation](Presentation.pdf).
+
+For any additional questions, please contact Ben Bogart / [ben@benbogart.com](mailto:ben@benbogart.com)
+
+Repository Structure
+
+```
+.
+├── notebook.ipynb																	<- the main notebook for the project
+├── data																						<- the data the project is based on
+├── images																					<- images used throughout the project
+├── presentation.pdf																<- a pdf of the presentation slides
+└── readme.md																				<- this file
+```
+
