@@ -4,14 +4,15 @@
 
 # Business Case
 
-Sam Samson and Sons is a real estate developer looking to adopt a data driven approach to choosing which properties to acquire, remodel, and bring back to market. In particular they want a model to answer the following questions:
+Sam Samson and Sons is a real estate developer looking to adopt a data driven approach to choosing which properties to acquire, remodel, and bring back to market. In particular they want to answer the following questions:
 
 1. Which upgrades will yield the highest return?
    - Examples:
      - what is the value of adding living space to the home?
      - what is the value of adding a bedroom or a bathroom?
 
-# Obtain [data]
+# The Data
+
 The data for this analysis was given to us by the client.  The dataset contains approximately one year of sales data from 05/02/2014, 05/27/2015.
 
 ## Column Names and descriptions for Kings County Data Set
@@ -52,7 +53,7 @@ This section contains all of the basic data cleaning for the data set including:
 
 # Baseline model
 
-Baseline model created with an $R^2$ of 0.70 and all p values are below 0.05.
+Baseline model created with an R<sup>2​</sup> of 0.70 and all p values are below 0.05.
 
 # Tools
 
