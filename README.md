@@ -44,12 +44,12 @@ The data for this analysis was given to us by the client.  The dataset contains 
 
 This section contains all of the basic data cleaning for the data set including:
 * Missing values
-  * Fill waterfront with median (0)
-  * Fill view with median (0)
-  * Fill yr_renovated with median (0)
+  * Fill `waterfront` with median (0)
+  * Fill `view` with median (0)
+  * Fill `yr_renovated` with median (0)
 * Data types
-  * Drop date (deemed not necessary for this project)
-  * sqft_basement was reconstructed from sqft_above and sqft_living
+  * Drop `date` (deemed not necessary for this project)
+  * `sqft_basement` was reconstructed from sqft_above and sqft_living
 
 # Baseline model
 
@@ -59,7 +59,7 @@ Baseline model created with an R<sup>2​</sup> of 0.70 and all p values are bel
 
 Created functions that will be reused throughout the notebook.
 
-* **rmse_delogged()** - calculates an rmse on the original scale when the dependent variable has been log transformed
+* **mse_delogged()** - calculates an mean squared error on the original scale when the dependent variable has been log transformed
 * **cross_validate_rmse()** - perform k-fold cross validation
 * **quicktest()** - creates a model, and optionally saves, displays a summary and calculates rmse.
 * **model_report()** - prints a DataFrame with the statistics of saved models.
@@ -70,7 +70,7 @@ Created functions that will be reused throughout the notebook.
 
 ## Check for linearity of variables.
 
-## Suspected Continuous Variables
+## Visualize Suspected Continuous Variables
 
 ![linearity1](images/linearity1.png)
 
@@ -84,11 +84,11 @@ Most variables appear to have at least some linear relationship with price. The 
 
 All of the potential categorical values except `zipcode` and `floors` appear to have a linear relationship with price.  Because of that we can treat them as continuous for now.
 
-zipcodes are probably not being used correctly here which we will need to address soon.
+zipcodes are probably not being used correctly here which we will address later.
 
 ## Check for Outliers (DBSCAN)
 
-`sqft_living` seems to have some prominent outliers.  We will use the DBSCAN clustering model to identify the outliers with respect to `sqft_living` and `price`.  The values need to be standardized so they are on the same scale, then run through DBSCAN.  DBSCAN groups values together by proximity.  Values that do not meet the grouping and distance criteria are marked as outliers with a -1.  I choose eps by experimentation.
+`sqft_living` seems to have some prominent outliers.  We will use the DBSCAN clustering model to identify the outliers with respect to `sqft_living` and `price`.  The values need to be standardized so they are on the same scale, then run through DBSCAN.  DBSCAN groups values together by proximity.  Values that do not meet the grouping and distance criteria are marked as outliers with a value of -1.  I choose eps by experimentation.
 
 ![outliers1](images/outliers1.png)
 
@@ -112,7 +112,7 @@ After creating the variable and log transforming it it does have a linear relati
 
 ## Then Repeat a similar process for Bathrooms
 
-### Check interactions of `bedroom` with `sqft_living`
+### Check interactions of bathroom with `sqft_living`
 
 ![new_features3](images/new_features3.png)
 
@@ -201,8 +201,7 @@ Since this model can be used for prediction, create a function to easily take th
 
 This model can also be used to determine the value of adding square footage to the home.  The coefficient for `sqft_living` has an interaction with zipcode zone.  Because both the dependent and independent variables are log transformed the price after adding square footage to the home can be determined by the following formula:
 
-$$ \textbf{Starting Value} \cdot \left( \frac{\textbf{sqft after}}{\textbf{sqft before}} \right)^{coef}
-= \textbf {New Price}$$
+![formula](images/formula1.png)
 
 ## Model 2
 
@@ -222,9 +221,7 @@ The coefficient of the variable `np.log(beds_per_sqft)` is $-0.1374$.
 
 Because both the dependent and independent variable are log transformed we take the proportion of $Beds_2$ to $Beds_1$ to the power of the coefficient.
 
-$$ \left( \frac{\textbf{Beds/sqft}_2}{\textbf{Beds/sqft}_1} \right) ^ {-0.1374} = 
- \left( \frac{\textbf{Beds}_2}{\textbf{Beds}_1} \right) ^ {-0.1374}
- = \textbf{Effect on housing price}$$
+![formula](images/formula2.png)
 
 * Visualize
 
@@ -250,9 +247,7 @@ The coefficient of the variable `np.log(baths_per_sqft)` is $0.0470$.
 
 Because both the dependent and independent variable are log transformed we take the proportion of $Baths_2$ to $Baths_1$ to the power of the coefficient.
 
-$$ \left( \frac{\textbf{Baths/sqft}_2}{\textbf{Baths/sqft}_1} \right) ^ {0.0470} = 
- \left( \frac{\textbf{Baths}_2}{\textbf{Baths}_1} \right) ^ {0.0470}
- = \textbf{Effect on housing price}$$
+![formula](images/formula3.png)
 
 * visualize
 
@@ -273,9 +268,25 @@ $$ \left( \frac{\textbf{Baths/sqft}_2}{\textbf{Baths/sqft}_1} \right) ^ {0.0470}
 |                              Final 2: Bedroom Effect | 0.777 |   165853.0 |  166231.0 |     378.0 |
 |                      Final model 3: Bathrooms Effect | 0.774 |   167060.0 |  167431.0 |     370.0 |
 
-# Notes
+# Assessment & Recommendations
 
-There is plenty more to explore in this data, for example the effect of improving the condition of a house.  The models here focus on isolating factors for accurate coefficients rather than on precise prediction.  For price prediction we would not need to be worried about the accuracy of the coefficients so correlations wouldn't need to be removed.  That would allow us to use more data for a more accurate prediction.
+* Adding square footage to a property can add significant value to a house.
+
+* Adding bedrooms or bathrooms within the existing square footage is likely to result in a loss.
+
+* The model can be used to predict a price although the model is not terribly accurate.  Still the results can be used for understanding a properties relationship to the market.
+
+The models here focus on isolating factors for accurate coefficients rather than on precise prediction.  For price prediction we would not need to be worried about the accuracy of the coefficients so correlations wouldn't need to be removed.  That would allow us to use more data for a more accurate prediction.
+
+This model will not predict the future.  With only 13 months of data we cannot asses overall market trends or even understand if the monthly trends are specific to this year or can be generalized form year to year.
+
+# Further Work
+
+Other areas to explore in this data for the real estate developer are:
+
+1. **Condition** how does price change with condition rating.
+2. **Addition Type** Determine the value of different types of expansions (Bedroom, Bathroom, Other)
+3. **Improve the model** With more data, or even just a different focus the prediction quality of the model could be improved dramatically.
 
 # For More Information
 
