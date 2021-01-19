@@ -84,7 +84,7 @@ Most variables appear to have at least some linear relationship with price. The 
 
 All of the potential categorical values except `zipcode` and `floors` appear to have a linear relationship with price.  Because of that we can treat them as continuous for now.
 
-zipcodes are probably not being used correctly here which we will address later.
+`zipcode` is omitted from the visualization because of the number of values.
 
 ## Check for Outliers (DBSCAN)
 
